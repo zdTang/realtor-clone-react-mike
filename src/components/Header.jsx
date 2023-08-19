@@ -22,26 +22,24 @@ function Header() {
         <div>
           <ul className="flex space-x-10">
             <li
-              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400   ${
-                pathMathRoute("/") &&
-                "text-black border-b-red-500 border-b-[3px]"
-              }`}
+              className={
+                `cursor-pointer py-3 text-sm font-semibold 
+                ${pathMathRoute("/") ? "text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
+                `}
             >
               Home
             </li>
             <li
-              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400   ${
-                pathMathRoute("/offers") &&
-                "text-black border-b-red-500 border-b-[3px]"
-              }`}
+              className={`cursor-pointer py-3 text-sm font-semibold 
+              ${pathMathRoute("/offers")?"text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
+              `}
             >
               Offers
             </li>
             <li
-              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400  ${
-                pathMathRoute("/sign-in") &&
-                "text-black border-b-red-500 border-b-[3px]"
-              }`}
+              className={`cursor-pointer py-3 text-sm font-semibold 
+              ${pathMathRoute("/sign-in") ? "text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
+              `}
             >
               Sign in
             </li>
