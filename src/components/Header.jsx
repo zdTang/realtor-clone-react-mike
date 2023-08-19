@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
 
 function Header() {
   return (
     <div>
-      Header
+      <header>
+        <div>
+          <img src="images/logos/rdc-logo-default.svg" alt="logo" />
+        </div>
+      </header>
     </div>
-  )
+  );
 }
 
-export default Header
+export default Header;
