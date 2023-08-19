@@ -3,9 +3,21 @@ import React from "react";
 function Header() {
   return (
     <div>
-      <header>
+      <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
         <div>
-          <img src="images/logos/rdc-logo-default.svg" alt="logo" />
+          <img
+            src="images/logos/rdc-logo-default.svg"
+            alt="logo"
+            className="h-5 cursor-pointer"
+          />
+        </div>
+
+        <div>
+          <ul>
+            <li>Home</li>
+            <li>Offers</li>
+            <li>Sign in</li>
+          </ul>
         </div>
       </header>
     </div>
