@@ -1,7 +1,8 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 function Header() {
   const location = useLocation();
+  const navigate=useNavigate();
   console.log(location.pathname);
 
   function pathMathRoute(route) {
@@ -16,6 +17,7 @@ function Header() {
             src="images/logos/rdc-logo-default.svg"
             alt="logo"
             className="h-5 cursor-pointer"
+            onClick={()=>navigate("/")}
           />
         </div>
 
@@ -26,6 +28,7 @@ function Header() {
                 `cursor-pointer py-3 text-sm font-semibold 
                 ${pathMathRoute("/") ? "text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
                 `}
+              onClick={()=>navigate("/")}
             >
               Home
             </li>
@@ -33,6 +36,7 @@ function Header() {
               className={`cursor-pointer py-3 text-sm font-semibold 
               ${pathMathRoute("/offers")?"text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
               `}
+              onClick={()=>navigate("/offers")}
             >
               Offers
             </li>
@@ -40,6 +44,7 @@ function Header() {
               className={`cursor-pointer py-3 text-sm font-semibold 
               ${pathMathRoute("/sign-in") ? "text-black border-b-red-500 border-b-[3px]":"text-gray-400"}
               `}
+              onClick={()=>navigate("/sign-in")}
             >
               Sign in
             </li>
