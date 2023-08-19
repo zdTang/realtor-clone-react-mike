@@ -13,7 +13,7 @@ function Header() {
         </div>
 
         <div>
-          <ul>
+          <ul className="flex space-x-10">
             <li>Home</li>
             <li>Offers</li>
             <li>Sign in</li>
