@@ -1,6 +1,13 @@
 import React from "react";
-
+import { useLocation } from "react-router-dom";
 function Header() {
+  const location = useLocation();
+  console.log(location.pathname);
+
+  function pathMathRoute(route) {
+    return route === location.pathname;
+  }
+
   return (
     <div className="bg-white border-b shadow-sm sticky top-0 z-50">
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
@@ -14,9 +21,30 @@ function Header() {
 
         <div>
           <ul className="flex space-x-10">
-            <li>Home</li>
-            <li>Offers</li>
-            <li>Sign in</li>
+            <li
+              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400   ${
+                pathMathRoute("/") &&
+                "text-black border-b-red-500 border-b-[3px]"
+              }`}
+            >
+              Home
+            </li>
+            <li
+              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400   ${
+                pathMathRoute("/offers") &&
+                "text-black border-b-red-500 border-b-[3px]"
+              }`}
+            >
+              Offers
+            </li>
+            <li
+              className={`cursor-pointer py-3 text-sm font-semibold text-gray-400  ${
+                pathMathRoute("/sign-in") &&
+                "text-black border-b-red-500 border-b-[3px]"
+              }`}
+            >
+              Sign in
+            </li>
           </ul>
         </div>
       </header>
