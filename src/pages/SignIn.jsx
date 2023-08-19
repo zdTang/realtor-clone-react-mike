@@ -8,7 +8,11 @@ function SignIn() {
         <div className='md:w-[67%] lg:w-[50%] mb-12 md:mb-6'>
           <img src="images/signin.jpg" alt="signIn" className='w-full rounded-2xl'/>
         </div>
-        <div></div>
+        <div className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
+          <form >
+            <input className='w-full' type="text"></input>
+          </form>
+        </div>
       </div>
     </section>
   )
