@@ -62,6 +62,7 @@ function SignIn() {
                 />
               )}
             </div>
+            
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="mb-6">
                 Don't have a account?
@@ -81,6 +82,13 @@ function SignIn() {
                 </Link>
               </p>
             </div>
+
+            <button
+              className="w-full bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
+              type="submit"
+            >
+              Sign in
+            </button>
           </form>
         </div>
       </div>
