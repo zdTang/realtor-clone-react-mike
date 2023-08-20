@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import OAuth from "../components/OAth";
+import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,7 +10,7 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-  const { name,email, password } = formData;
+  const { name, email, password } = formData;
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,

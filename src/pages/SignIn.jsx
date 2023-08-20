@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import OAuth from "../components/OAth";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
