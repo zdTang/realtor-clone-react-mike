@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +32,7 @@ function SignIn() {
           <form>
             <div>
               <input
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
+                className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
                 id="email"
                 type="email"
                 value={email}
@@ -60,6 +61,25 @@ function SignIn() {
                   onClick={() => setShowPassword((prevState) => !prevState)}
                 />
               )}
+            </div>
+            <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
+              <p className="mb-6">
+                Don't have a account?
+                <Link
+                  to="/sign-up"
+                  className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
+                >
+                  Register
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out"
+                >
+                  Forgot password?
+                </Link>
+              </p>
             </div>
           </form>
         </div>
