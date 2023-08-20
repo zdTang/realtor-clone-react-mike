@@ -62,7 +62,7 @@ function SignIn() {
                 />
               )}
             </div>
-            
+
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="mb-6">
                 Don't have a account?
@@ -89,6 +89,9 @@ function SignIn() {
             >
               Sign in
             </button>
+            <div className="flex items-center  my-4 before:border-t before:flex-1 before:border-gray-300 after:border-t after:flex-1 after:border-gray-300">
+              <p className="text-center font-semibold mx-4">OR</p>
+            </div>
           </form>
         </div>
       </div>
