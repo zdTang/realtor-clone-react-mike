@@ -2,6 +2,9 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,12 +14,36 @@ export default function SignUp() {
     password: "",
   });
   const { name, email, password } = formData;
+  
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   }
+  // This method will be used to submit the form data
+  // And user Firebase service to create a new user
+  
+  const onClick=(e)=>{
+      e.preventDefault();
+      //const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        // ...
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+  }
+
+
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign Up</h1>
@@ -29,7 +56,7 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onClick={onClick}>
             <input
               type="text"
               id="name"
