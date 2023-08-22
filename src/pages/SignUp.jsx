@@ -2,9 +2,9 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-
+import { createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
+import { db,auth } from "../firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,23 +24,29 @@ export default function SignUp() {
   // This method will be used to submit the form data
   // And user Firebase service to create a new user
   
-  const onClick=(e)=>{
+  const  onSubmit=async (e)=>{
       e.preventDefault();
       //const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        // ...
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-        console.log(errorCode);
-        console.log(errorMessage);
-      });
+      try{
+        var userCredential= await createUserWithEmailAndPassword(auth, email, password);
+        
+        await updateProfile(auth.currentUser, {
+          displayName: name,
+        });
+
+      const user = userCredential.user;
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+      // Write to "users" document
+      // setDoc(DocumentReference, Data)
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      console.log(user);
+      }
+      catch(error){
+        console.log(error.code);
+        console.log(error.message);
+      };
   }
 
 
@@ -56,7 +62,7 @@ export default function SignUp() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form onClick={onClick}>
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="name"
