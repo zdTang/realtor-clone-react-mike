@@ -2,10 +2,11 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
-import { createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
-import { db,auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { db, auth } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import SignInImage from "../pages/SignInImage";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,7 @@ export default function SignUp() {
     password: "",
   });
   const { name, email, password } = formData;
-  
+
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
@@ -24,16 +25,21 @@ export default function SignUp() {
   }
   // This method will be used to submit the form data
   // And user Firebase service to create a new user
-  
-  const  onSubmit=async (e)=>{
-      e.preventDefault();
-      //const auth = getAuth();
-      try{
-        var userCredential= await createUserWithEmailAndPassword(auth, email, password);
-        
-        await updateProfile(auth.currentUser, {
-          displayName: name,
-        });
+
+  const navigate = useNavigate();
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    //const auth = getAuth();
+    try {
+      var userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+      });
 
       const user = userCredential.user;
       const formDataCopy = { ...formData };
@@ -43,21 +49,19 @@ export default function SignUp() {
       // setDoc(DocumentReference, Data)
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       console.log(user);
-      }
-      catch(error){
-        console.log(error.code);
-        console.log(error.message);
-      };
-  }
+      navigate("/");
+    } catch (error) {
+      console.log(error.code);
+      console.log(error.message);
+    }
+  };
 
+  // const onSubmit = (e) => {
+  //   e.preventDefault();   // prevent page refresh
+  //   //TODO: time to do the authentication check
+  //   console.log(formData);
+  // }
 
-
-  const onSubmit = (e) => {
-    e.preventDefault();   // prevent page refresh
-    //TODO: time to do the authentication check
-    console.log(formData);
-  }
-  
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign Up</h1>
