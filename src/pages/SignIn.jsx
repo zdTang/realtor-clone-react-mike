@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import SignInImage from "../pages/SignInImage";
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,14 +22,7 @@ function SignIn() {
       <h1 className="text-3xl text-center mt-6 font-bold">Sign In</h1>
 
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto">
-        <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
-          <img
-            src="images/signin.jpg"
-            alt="signIn"
-            className="w-full rounded-2xl"
-          />
-        </div>
-
+        <SignInImage />
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
           <form>
             <div>

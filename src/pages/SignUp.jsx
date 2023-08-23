@@ -5,6 +5,7 @@ import OAuth from "../components/OAuth";
 import { createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
 import { db,auth } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import SignInImage from "../pages/SignInImage";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,17 +51,18 @@ export default function SignUp() {
   }
 
 
+
+  const onSubmit = (e) => {
+    e.preventDefault();   // prevent page refresh
+    //TODO: time to do the authentication check
+    console.log(formData);
+  }
+  
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign Up</h1>
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto">
-        <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
-          <img
-            src="images/signin.jpg"
-            alt="key"
-            className="w-full rounded-2xl"
-          />
-        </div>
+        <SignInImage />
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
           <form onSubmit={onSubmit}>
             <input
