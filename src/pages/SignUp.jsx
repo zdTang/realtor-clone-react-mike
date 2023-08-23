@@ -33,6 +33,7 @@ export default function SignUp() {
     //const auth = getAuth();
 
     //Validate form data
+    //const emailRegex =  new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
     if (
       (email === null || email.trim() === "") &&
       (password === null || password.trim() === "")
@@ -43,13 +44,22 @@ export default function SignUp() {
 
       return;
     }
-
+    // test if email is null or empty
     if (email === null || email.trim() === "") {
       toast.error("Email cannot be empty!", {
         theme: "light",
       });
       return;
     }
+    // If email is not valid, don't send to Firebase
+    // Found the Email type Form data can be validated by the HTML?
+    // const isValidEmail = emailRegex.test(email);
+    // if (!isValidEmail) {
+    //   toast.error("Invalid Email!", {
+    //     theme: "light",
+    //   });
+    //   return;   
+    // }
 
     if (password === null || password.trim() === "") {
       toast.error("Password cannot be empty!", {
@@ -100,7 +110,7 @@ export default function SignUp() {
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto">
         <SignInImage />
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit}>  {/*onSubmit is only for the Form, not for the Button, Button has onClick */}
             <input
               type="text"
               id="name"
