@@ -7,7 +7,7 @@ import { db, auth } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import SignInImage from "../pages/SignInImage";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -49,10 +49,33 @@ export default function SignUp() {
       // setDoc(DocumentReference, Data)
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       console.log(user);
+
+      toast.success("Sign up was successful !", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
       navigate("/");
     } catch (error) {
       console.log(error.code);
       console.log(error.message);
+
+      toast.error("🦄 Error happens!", {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
