@@ -27,9 +27,37 @@ export default function SignUp() {
   // And user Firebase service to create a new user
 
   const navigate = useNavigate();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     //const auth = getAuth();
+
+    //Validate form data
+    if (
+      (email === null || email.trim() === "") &&
+      (password === null || password.trim() === "")
+    ) {
+      toast.error("Email and Password cannot be empty!", {
+        theme: "light",
+      });
+
+      return;
+    }
+
+    if (email === null || email.trim() === "") {
+      toast.error("Email cannot be empty!", {
+        theme: "light",
+      });
+      return;
+    }
+
+    if (password === null || password.trim() === "") {
+      toast.error("Password cannot be empty!", {
+        theme: "light",
+      });
+      return;
+    }
+
     try {
       var userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -50,30 +78,11 @@ export default function SignUp() {
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       console.log(user);
 
-      toast.success("Sign up was successful !", {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-
+      toast.success("Sign up was successful !");
       navigate("/");
     } catch (error) {
-      console.log(error.code);
       console.log(error.message);
-
-      toast.error("🦄 Error happens!", {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+      toast.error(error.message, {
         theme: "light",
       });
     }
