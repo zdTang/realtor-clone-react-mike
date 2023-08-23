@@ -1,31 +1,33 @@
 import {FcGoogle} from "react-icons/fc"
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {auth} from "../firebase";
+//import {auth} from "../firebase";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 export default function OAuth() {
 
-  
+  const navigate = useNavigate();
   // Here we will use Firebase google authentication
-  function onGoogleClick(){
+  async function onGoogleClick(){
+    const auth = getAuth();
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
-      // The signed-in user info.
-      const user = result.user;
-      // IdP data available using getAdditionalUserInfo(result)
-      // ...
-    }).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
-    });
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // check for the user
+    const docRef = doc(db, "users", user.uid);   // get the doc reference
+    const docSnap = await getDoc(docRef);        // get the doc snapshot
+
+    if (!docSnap.exists()) {
+      await setDoc(docRef, {                   // if the user does not exist, create a new user
+        name: user.displayName,
+        email: user.email,
+        timestamp: serverTimestamp(),
+      });
+    }
+
+    navigate("/");
   }
 
   return (
