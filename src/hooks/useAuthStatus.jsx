@@ -15,6 +15,7 @@ export function useAuthStatus() {
     console.log("into useAuthStatus--useEffect Hook, auth is:",auth);
     // This is from Firebase
     onAuthStateChanged(auth, (user) => {
+      console.log("into onAuthStateChanged, LoggedIn or CheckingStatus will change--");
       if (user) {
         setLoggedIn(true);
       }

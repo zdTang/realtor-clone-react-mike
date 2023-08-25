@@ -13,6 +13,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 
 function App() {
+  console.log("into App--");
   return (
     <>
         <Router>
