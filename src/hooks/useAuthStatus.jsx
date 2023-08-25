@@ -21,6 +21,6 @@ export function useAuthStatus() {
       }
       setCheckingStatus(false);
     });
-  }, []);
+  }, []);  // [], the useEffect will run only once, after the initial render
   return { loggedIn, checkingStatus };
 }
