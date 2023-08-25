@@ -1,5 +1,5 @@
 // https://firebase.google.com/docs/auth/web/start
-
+// https://stackoverflow.com/questions/68470035/firebase-error-no-firebase-app-default-has-been-created
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore} from "firebase/firestore";

@@ -9,20 +9,28 @@ import Header from "./components/Header";
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css"; // Never forget to import this
+import PrivateRoute from "./components/PrivateRoute";
+
+
 function App() {
   return (
     <>
-      <Router>
+        <Router>
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route path="/profile" element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/offers" element={<Offers />} />
         </Routes>
       </Router>
+
         <ToastContainer
           position="bottom-center"
           autoClose={5000}
