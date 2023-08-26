@@ -10,14 +10,17 @@ import { db } from "../firebase";
 function Profile() {
 
   console.log("into Profile--");
+ 
   const auth = getAuth();
   const navigate = useNavigate();
   const [changeDetail, setChangeDetail] = useState(false);
-  
+  console.log("Profile--changeDetail:",changeDetail);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
+
+  console.log("Profile--formData:",formData);
   const { name, email } = formData;
   
   function onLogout() {
