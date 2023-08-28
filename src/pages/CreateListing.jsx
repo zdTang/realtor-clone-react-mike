@@ -11,7 +11,7 @@ function CreateListing() {
         furnished: false,
         address: "",
         description: "",
-        offer: false,
+        offer: true,
         regularPrice: 0,
         discountedPrice: 0,
       });
@@ -29,14 +29,57 @@ function CreateListing() {
         discountedPrice,
       } = formData;
     
+      console.log(formData);
+
+    
     function onChange(e) {
     console.dir(e);
-    //setFormData({ ...formData, [name]: value })
-    const {name,value}=e.target;
-    console.log(name,value);
+    //https://stackoverflow.com/questions/54150783/react-hooks-usestate-with-object
+    //Even the boolean value passed from BROWSERS are totally strings
+    //Here convert STRING to boolean value again
+    let {name,value}=e.target;
+        if (value === "true") {
+        value = true;
+        } 
+        else if (value === "false") {
+        value = false;
+        }
+
     setFormData({ ...formData, [name]: value })
+    // Files
+         if (e.target.files) {
+           setFormData((prevState) => ({
+             ...prevState,
+             images: e.target.files,
+           }));
+         }
     }
     
+    // function onChange(e) {
+    //     let boolean = null;
+    //     if (e.target.value === "true") {
+    //       boolean = true;
+    //     }
+    //     if (e.target.value === "false") {
+    //       boolean = false;
+    //     }
+    //     // Files
+    //     if (e.target.files) {
+    //       setFormData((prevState) => ({
+    //         ...prevState,
+    //         images: e.target.files,
+    //       }));
+    //     }
+    //     // Text/Boolean/Number
+    //     if (!e.target.files) {
+    //       setFormData((prevState) => ({
+    //         ...prevState,
+    //         [e.target.id]: boolean ?? e.target.value,
+    //       }));
+    //     }
+
+       
+    //   }
   return (
     <main className="max-w-md px-2 mx-auto">
           <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
@@ -72,7 +115,7 @@ function CreateListing() {
               <input
                   type="text"
                   name="name"
-                  id="name"
+                  //id="name"
                   value={name}
                   className="w-full py-2 px-4 text-xl mb-6 text-gray-700 bg-white border boarder-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600"
                   placeholder="Name"
@@ -86,7 +129,8 @@ function CreateListing() {
             <p className="text-lg font-semibold">Beds</p>
             <input
               type="number"
-              id="bedrooms"
+              //id="bedrooms"
+              name="bedrooms"
               value={bedrooms}
               onChange={onChange}
               min="1"
@@ -99,7 +143,7 @@ function CreateListing() {
             <p className="text-lg font-semibold">Baths</p>
             <input
               type="number"
-              id="bathrooms"
+              name="bathrooms"
               value={bathrooms}
               onChange={onChange}
               min="1"
@@ -113,22 +157,22 @@ function CreateListing() {
         <div className="flex">
           <button
             type="button"
-            id="parking"
+            name="parking"
             value={true}
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !parking ? "bg-white text-black" : "bg-slate-600 text-white"
+              parking ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             Yes
           </button>
           <button
             type="button"
-            id="parking"
+            name="parking"
             value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              parking ? "bg-white text-black" : "bg-slate-600 text-white"
+                !parking ?"bg-slate-600 text-white"  : "bg-white text-black"
             }`}
           >
             no
@@ -138,22 +182,22 @@ function CreateListing() {
         <div className="flex">
           <button
             type="button"
-            id="furnished"
+            name="furnished"
             value={true}
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+              furnished ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             yes
           </button>
           <button
             type="button"
-            id="furnished"
+            name="furnished"
             value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+              !furnished  ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             no
@@ -162,7 +206,7 @@ function CreateListing() {
         <p className="text-lg mt-6 font-semibold">Address</p>
         <textarea
           type="text"
-          id="address"
+          name="address"
           value={address}
           onChange={onChange}
           placeholder="Address"
@@ -172,7 +216,7 @@ function CreateListing() {
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
-          id="description"
+          name="description"
           value={description}
           onChange={onChange}
           placeholder="Description"
@@ -183,7 +227,7 @@ function CreateListing() {
         <div className="flex mb-6">
           <button
             type="button"
-            id="offer"
+            name="offer"
             value={true}
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
@@ -194,7 +238,7 @@ function CreateListing() {
           </button>
           <button
             type="button"
-            id="offer"
+            name="offer"
             value={false}
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
@@ -210,7 +254,7 @@ function CreateListing() {
             <div className="flex w-full justify-center items-center space-x-6">
               <input
                 type="number"
-                id="regularPrice"
+                name="regularPrice"
                 value={regularPrice}
                 onChange={onChange}
                 min="50"
@@ -233,7 +277,7 @@ function CreateListing() {
               <div className="flex w-full justify-center items-center space-x-6">
                 <input
                   type="number"
-                  id="discountedPrice"
+                  name="discountedPrice"
                   value={discountedPrice}
                   onChange={onChange}
                   min="50"
