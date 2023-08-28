@@ -30,9 +30,10 @@ function CreateListing() {
       } = formData;
     
     function onChange(e) {
-    const { name, value } = e.target;
-    console.log(e.target.value);
-    console.log(e.target.name);
+    console.dir(e);
+    //setFormData({ ...formData, [name]: value })
+    const {name,value}=e.target;
+    console.log(name,value);
     setFormData({ ...formData, [name]: value })
     }
     
@@ -45,6 +46,7 @@ function CreateListing() {
                   <button
                       type="button"
                       id="sell"
+                      name="type"
                       value="sell"
                       onClick={onChange}
                       className={`mr-2 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg 
@@ -55,6 +57,7 @@ function CreateListing() {
                   </button>
                   <button
                       type="button"
+                      name="type"
                       id="rent"
                       value="rent"
                       onClick={onChange}
