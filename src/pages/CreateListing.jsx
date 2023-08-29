@@ -5,15 +5,15 @@ function CreateListing() {
     const [formData, setFormData] = useState({
         type: "rent",
         name: "",
-        bedrooms: 1,
-        bathrooms: 1,
-        parking: false,
-        furnished: false,
+        bedrooms: "1",
+        bathrooms: "1",
+        parking: "false",
+        furnished: "false",
         address: "",
         description: "",
-        offer: true,
-        regularPrice: 0,
-        discountedPrice: 0,
+        offer: "true",
+        regularPrice: "0",
+        discountedPrice: "0",
       });
       const {
         type,
@@ -38,13 +38,6 @@ function CreateListing() {
     //Even the boolean value passed from BROWSERS are totally strings
     //Here convert STRING to boolean value again
     let {name,value}=e.target;
-        if (value === "true") {
-        value = true;
-        } 
-        else if (value === "false") {
-        value = false;
-        }
-
     setFormData({ ...formData, [name]: value })
     // Files
          if (e.target.files) {
@@ -55,31 +48,7 @@ function CreateListing() {
          }
     }
     
-    // function onChange(e) {
-    //     let boolean = null;
-    //     if (e.target.value === "true") {
-    //       boolean = true;
-    //     }
-    //     if (e.target.value === "false") {
-    //       boolean = false;
-    //     }
-    //     // Files
-    //     if (e.target.files) {
-    //       setFormData((prevState) => ({
-    //         ...prevState,
-    //         images: e.target.files,
-    //       }));
-    //     }
-    //     // Text/Boolean/Number
-    //     if (!e.target.files) {
-    //       setFormData((prevState) => ({
-    //         ...prevState,
-    //         [e.target.id]: boolean ?? e.target.value,
-    //       }));
-    //     }
 
-       
-    //   }
   return (
     <main className="max-w-md px-2 mx-auto">
           <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
@@ -158,10 +127,10 @@ function CreateListing() {
           <button
             type="button"
             name="parking"
-            value={true}
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              parking ? "bg-slate-600 text-white" : "bg-white text-black"
+              parking.toLowerCase()==="true" ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             Yes
@@ -169,10 +138,10 @@ function CreateListing() {
           <button
             type="button"
             name="parking"
-            value={false}
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-                !parking ?"bg-slate-600 text-white"  : "bg-white text-black"
+                parking.toLowerCase()==="false" ?"bg-slate-600 text-white"  : "bg-white text-black"
             }`}
           >
             no
@@ -183,10 +152,10 @@ function CreateListing() {
           <button
             type="button"
             name="furnished"
-            value={true}
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              furnished ? "bg-slate-600 text-white" : "bg-white text-black"
+              furnished.toLowerCase()==="true" ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             yes
@@ -194,10 +163,10 @@ function CreateListing() {
           <button
             type="button"
             name="furnished"
-            value={false}
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !furnished  ? "bg-slate-600 text-white" : "bg-white text-black"
+              furnished.toLowerCase()==="false"  ? "bg-slate-600 text-white" : "bg-white text-black"
             }`}
           >
             no
@@ -228,10 +197,10 @@ function CreateListing() {
           <button
             type="button"
             name="offer"
-            value={true}
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !offer ? "bg-white text-black" : "bg-slate-600 text-white"
+              offer.toLowerCase()==="true" ? "bg-slate-600 text-white": "bg-white text-black" 
             }`}
           >
             yes
@@ -239,10 +208,10 @@ function CreateListing() {
           <button
             type="button"
             name="offer"
-            value={false}
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              offer ? "bg-white text-black" : "bg-slate-600 text-white"
+              offer.toLowerCase()==="false" ? "bg-slate-600 text-white": "bg-white text-black" 
             }`}
           >
             no
@@ -282,7 +251,7 @@ function CreateListing() {
                   onChange={onChange}
                   min="50"
                   max="400000000"
-                  required={offer}
+                  required={offer==="true"?true:false}
                   className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
                 />
                 {type === "rent" && (
