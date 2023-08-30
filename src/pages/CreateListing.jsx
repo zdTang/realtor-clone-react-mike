@@ -1,9 +1,10 @@
 import React from "react";
 import {useState} from "react";
+import Spinner from "../components/Spinner";
 function CreateListing() {
 
-  const [geolocationEnabled, setGeolocationEnabled] = useState(false); 
-  
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false); //to initialize the state of geolocationEnabled(if we have GOOGLE api)
+  const [loading, setLoading] = useState(false); //to initialize the state of Spinner once Post Formdata to database
   const [formData, setFormData] = useState({
         type: "rent",
         name: "",
@@ -53,12 +54,21 @@ function CreateListing() {
            }));
          }
     }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      console.log(formData);
+      setLoading(true);    // display the spinner
+    }
     
+    if(loading){
+      return <Spinner />
+    }
 
   return (
     <main className="max-w-md px-2 mx-auto">
           <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
-          <form>
+          <form onSubmit={handleSubmit}>
               <p className="text-lg mt-6 font-semibold">Sell/Rent</p>
               <div className="flex justify-center mt-4">
                   <button
@@ -312,6 +322,7 @@ function CreateListing() {
           <input
             type="file"
             id="images"
+            name="images"
             onChange={onChange}
             accept=".jpg,.png,.jpeg"
             multiple
