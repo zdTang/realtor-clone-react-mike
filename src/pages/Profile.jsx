@@ -1,6 +1,14 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
-import { useState } from "react";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { useState,useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
@@ -12,6 +20,8 @@ function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
   const [changeDetail, setChangeDetail] = useState(false);
+  const [listings, setListings] = useState(null);
+  const [loading, setLoading] = useState(true);
   console.log("Profile--changeDetail:", changeDetail);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
@@ -32,7 +42,7 @@ function Profile() {
       [e.target.id]: e.target.value,
     }));
   }
-
+  // Here to update User's information
   async function onSubmit() {
     try {
       console.log("into Profile--onSubmit--");
@@ -62,7 +72,33 @@ function Profile() {
     }
   }
 
-  // const handleSubmit = (e
+  //Here to get User's listings from firestore
+  useEffect(() => {
+    //Define a function to get User's listings from firestore
+    async function fetchUserListings() {
+      const listingRef = collection(db, "listings");
+      const q = query(
+        listingRef,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+      const querySnap = await getDocs(q);
+      console.log("into Profile--useEffect--querySnap:", querySnap);
+      let listings = [];
+      querySnap.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+      console.log("into Profile--useEffect--listings:", listings);
+      setListings(listings);
+      setLoading(false);
+    }
+    // Execute the function
+    fetchUserListings();
+  }, [auth.currentUser.uid]);
+
   return (
     <>
       <section className="max-w-6xl mx-auto flex justify-center items-center flex-col">
