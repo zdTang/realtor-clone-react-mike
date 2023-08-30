@@ -1,6 +1,7 @@
 import React from "react";
 import {useState} from "react";
 import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
 function CreateListing() {
 
   const [geolocationEnabled, setGeolocationEnabled] = useState(false); //to initialize the state of geolocationEnabled(if we have GOOGLE api)
@@ -18,7 +19,8 @@ function CreateListing() {
         regularPrice: "0",
         discountedPrice: "0",
         latitude: "0",
-        longitude: "0"
+        longitude: "0",
+        images:[]
       });
       const {
         type,
@@ -33,7 +35,8 @@ function CreateListing() {
         regularPrice,
         discountedPrice,
         latitude,
-        longitude
+        longitude,
+        images
       } = formData;
     
       console.log(formData);
@@ -55,12 +58,55 @@ function CreateListing() {
          }
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
       console.log(formData);
       setLoading(true);    // display the spinner
+    //=== validate if Form Data is valid=== 
+
+    // Check if discounted price is reasonable
+      if (+discountedPrice >= +regularPrice) {
+        setLoading(false);
+        toast.error("Discounted price needs to be less than regular price");
+        return;
+      }
+
+    // Check if Images is more than 6
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error("maximum 6 images are allowed");
+      return;
     }
+    // Check if GeoCoding API is enabled, or just use Longitude and Latitude to show the Location
+    let geolocation = {};
+    let location;
+    if (geolocationEnabled) {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+      );
+      const data = await response.json();
+      console.log(data);
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
+
+      location = data.status === "ZERO_RESULTS" && undefined;
+
+      if (location === undefined) {
+        setLoading(false);
+        toast.error("please enter a correct address");
+        return;
+      }
+    } 
+    else // if not enabled, just use Longitude and Latitude to show the Location(these need manually input)
     
+    {
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+    }
+  }
+    
+    
+    //After Posting Formdata to database, display Spinner
     if(loading){
       return <Spinner />
     }
