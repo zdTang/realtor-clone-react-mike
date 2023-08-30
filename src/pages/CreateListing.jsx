@@ -2,7 +2,9 @@ import React from "react";
 import {useState} from "react";
 function CreateListing() {
 
-    const [formData, setFormData] = useState({
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false); 
+  
+  const [formData, setFormData] = useState({
         type: "rent",
         name: "",
         bedrooms: "1",
@@ -14,6 +16,8 @@ function CreateListing() {
         offer: "true",
         regularPrice: "0",
         discountedPrice: "0",
+        latitude: "0",
+        longitude: "0"
       });
       const {
         type,
@@ -27,6 +31,8 @@ function CreateListing() {
         offer,
         regularPrice,
         discountedPrice,
+        latitude,
+        longitude
       } = formData;
     
       console.log(formData);
@@ -182,6 +188,39 @@ function CreateListing() {
           required
           className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6"
         />
+          {!geolocationEnabled && (
+          <div className="flex space-x-6 justify-start mb-6">
+            <div className="">
+              <p className="text-lg font-semibold">Latitude</p>
+              <input
+                type="number"
+                id="latitude"
+                name="latitude"
+                value={latitude}
+                onChange={onChange}
+                required
+                min="-90"
+                max="90"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+              />
+            </div>
+            <div className="">
+              <p className="text-lg font-semibold">Longitude</p>
+              <input
+                type="number"
+                id="longitude"
+                name="longitude"
+                value={longitude}
+                onChange={onChange}
+                required
+                min="-180"
+                max="180"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+              />
+            </div>
+          </div>
+        )}
+
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
