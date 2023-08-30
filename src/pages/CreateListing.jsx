@@ -171,6 +171,7 @@ function CreateListing() {
       imgUrls,
       geolocation,
       timestamp: serverTimestamp(),
+      userRef: auth.currentUser.uid,
     };
     // Remove some unused properties
     delete formDataCopy.images;   // Remove a property
