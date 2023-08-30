@@ -2,10 +2,23 @@ import React from "react";
 import {useState} from "react";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
-function CreateListing() {
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
+function CreateListing() {
   const [geolocationEnabled, setGeolocationEnabled] = useState(false); //to initialize the state of geolocationEnabled(if we have GOOGLE api)
-  const [loading, setLoading] = useState(false); //to initialize the state of Spinner once Post Formdata to database
+  const auth = getAuth();
+  const navigate = useNavigate();
+  const [loadSpinner, setLoadSpinner] = useState(false); //to initialize the state of Spinner once Post Formdata to database
   const [formData, setFormData] = useState({
         type: "rent",
         name: "",
@@ -61,19 +74,19 @@ function CreateListing() {
     async function handleSubmit(e) {
       e.preventDefault();
       console.log(formData);
-      setLoading(true);    // display the spinner
+      setLoadSpinner(true);    // display the spinner
     //=== validate if Form Data is valid=== 
 
     // Check if discounted price is reasonable
       if (+discountedPrice >= +regularPrice) {
-        setLoading(false);
+        setLoadSpinner(false);
         toast.error("Discounted price needs to be less than regular price");
         return;
       }
 
     // Check if Images is more than 6
     if (images.length > 6) {
-      setLoading(false);
+      setLoadSpinner(false);
       toast.error("maximum 6 images are allowed");
       return;
     }
@@ -92,7 +105,7 @@ function CreateListing() {
       location = data.status === "ZERO_RESULTS" && undefined;
 
       if (location === undefined) {
-        setLoading(false);
+        setLoadSpinner(false);
         toast.error("please enter a correct address");
         return;
       }
@@ -103,11 +116,79 @@ function CreateListing() {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
     }
+
+    //Uploading Images
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image)) // StoreImage will return a Promise
+    ).catch((error) => {
+      setLoadSpinner(false);
+      toast.error("Images not uploaded");
+      return;
+    });
+
+    console.dir(imgUrls);
+    // Here to store the images in firebase storage!! Not fireStore
+    async function storeImage(image) {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;// Generate a unique filename
+        const storageRef = ref(storage, filename);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    }
+
+    // Storing the data to Firestore (Which is not firebase Storage)
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+    };
+    // Remove some unused properties
+    delete formDataCopy.images;   // Remove a property
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    delete formDataCopy.latitude;
+    delete formDataCopy.longitude;
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);  //add a new document to the listings collection
+    setLoadSpinner(false);
+    toast.success("Listing created");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
     
+
+
+
     
     //After Posting Formdata to database, display Spinner
-    if(loading){
+  if(loadSpinner){
       return <Spinner />
     }
 
