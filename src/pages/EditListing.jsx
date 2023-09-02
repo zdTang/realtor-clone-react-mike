@@ -25,7 +25,7 @@ export default function EditListing() {
   console.log("in the EditListing");
   const navigate = useNavigate();
   const auth = getAuth();
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [listing, setListing] = useState(null);
   const [formData, setFormData] = useState({
@@ -43,6 +43,10 @@ export default function EditListing() {
     latitude: 0,
     longitude: 0,
     images: {},
+    geolocation:{
+      lat: "0",
+      lng: "0"
+    }
   });
   const {
     type,
@@ -59,6 +63,7 @@ export default function EditListing() {
     latitude,
     longitude,
     images,
+    geolocation
   } = formData;
 
   const params = useParams();
@@ -225,6 +230,7 @@ export default function EditListing() {
     const docRef = doc(db, "listings", params.listingId);
 
     await updateDoc(docRef, formDataCopy);   // Update the document
+    console.log("EditListing-postNewListingInfoToCloud:",formDataCopy);
     setLoading(false);
     toast.success("Listing Edited");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
@@ -373,7 +379,7 @@ export default function EditListing() {
               <input
                 type="number"
                 id="latitude"
-                value={latitude}
+                value={geolocation.lat}
                 onChange={onChange}
                 required
                 min="-90"
@@ -386,7 +392,7 @@ export default function EditListing() {
               <input
                 type="number"
                 id="longitude"
-                value={longitude}
+                value={geolocation.lng}
                 onChange={onChange}
                 required
                 min="-180"
