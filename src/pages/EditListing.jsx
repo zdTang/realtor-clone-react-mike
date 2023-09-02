@@ -31,22 +31,20 @@ export default function EditListing() {
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
-    bedrooms: 1,
-    bathrooms: 1,
-    parking: false,
-    furnished: false,
+    bedrooms: "1",
+    bathrooms: "1",
+    parking: "false",
+    furnished: "false",
     address: "",
     description: "",
-    offer: false,
-    regularPrice: 0,
-    discountedPrice: 0,
-    latitude: 0,
-    longitude: 0,
-    images: {},
-    geolocation:{
+    offer: "true",
+    regularPrice: "0",
+    discountedPrice: "0",
+    images: [],
+    geolocation: {
       lat: "0",
-      lng: "0"
-    }
+      lng: "0",
+    },
   });
   const {
     type,
@@ -60,14 +58,13 @@ export default function EditListing() {
     offer,
     regularPrice,
     discountedPrice,
-    latitude,
-    longitude,
     images,
-    geolocation
+    geolocation,
   } = formData;
 
   const params = useParams();
-
+  console.log("EditListing-formData:", formData);
+  // Check user's authentication
   useEffect(() => {
     if (listing && listing.userRef !== auth.currentUser.uid) {
       toast.error("You can't edit this listing");
@@ -75,6 +72,7 @@ export default function EditListing() {
     }
   }, [auth.currentUser.uid, listing, navigate]);
 
+  // Query List information based on ListingId
   useEffect(() => {
     setLoading(true);
     //Define a function
@@ -82,6 +80,7 @@ export default function EditListing() {
       const docRef = doc(db, "listings", params.listingId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
+        console.log("EditListing-FetchListFromFireStore:", docSnap.data());
         setListing(docSnap.data());
         setFormData({ ...docSnap.data() });
         setLoading(false);
@@ -94,14 +93,14 @@ export default function EditListing() {
     fetchListing();
   }, [navigate, params.listingId]);
 
+  /*====User play with Form==== */
   function onChange(e) {
-    let boolean = null;
-    if (e.target.value === "true") {
-      boolean = true;
-    }
-    if (e.target.value === "false") {
-      boolean = false;
-    }
+    console.dir(e);
+    //https://stackoverflow.com/questions/54150783/react-hooks-usestate-with-object
+    //Even the boolean value passed from BROWSERS are totally strings
+    //Here convert STRING to boolean value again
+    let { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
     // Files
     if (e.target.files) {
       setFormData((prevState) => ({
@@ -109,14 +108,22 @@ export default function EditListing() {
         images: e.target.files,
       }));
     }
-    // Text/Boolean/Number
-    if (!e.target.files) {
-      setFormData((prevState) => ({
-        ...prevState,
-        [e.target.id]: boolean ?? e.target.value,
-      }));
+
+    if (e.target.name === "geolocation.lat") {
+      setFormData({
+        ...formData,
+        geolocation: { ...geolocation, lat: e.target.value },
+      });
+    }
+    if (e.target.name === "geolocation.lng") {
+      setFormData({
+        ...formData,
+        geolocation: { ...geolocation, lng: e.target.value },
+      });
     }
   }
+
+  /*====Post Form data to Firebase store==== */
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -126,12 +133,12 @@ export default function EditListing() {
       return;
     }
     // When update a LIST, the IMAGES maybe null, it is not required for user to upload images
-    if (images&&images.length > 6) {
+    if (images && images.length > 6) {
       setLoading(false);
       toast.error("maximum 6 images are allowed");
       return;
     }
-    let geolocation = {};
+    //let geolocation = {};
     let location;
     if (geolocationEnabled) {
       const response = await fetch(
@@ -149,9 +156,6 @@ export default function EditListing() {
         toast.error("please enter a correct address");
         return;
       }
-    } else {
-      geolocation.lat = latitude;
-      geolocation.lng = longitude;
     }
 
     async function storeImage(image) {
@@ -194,43 +198,45 @@ export default function EditListing() {
 
     // When update a LIST, the IMAGES maybe null, it is not required for user to upload images when Editing a List
     let imgUrls;
-    if(images){
-        imgUrls = await Promise.all(
-            [...images].map((image) => storeImage(image))
-          ).catch((error) => {
-            setLoading(false);
-            toast.error("Images not uploaded");
-            return;
-          });
+    if (images) {
+      imgUrls = await Promise.all(
+        [...images].map((image) => storeImage(image))
+      ).catch((error) => {
+        setLoading(false);
+        toast.error("Images not uploaded");
+        return;
+      });
     }
-    
+
     // When update a LIST, the IMAGES maybe null, it is not required for user to upload images when Editing a List
     let formDataCopy;
-    if(imgUrls){ // UPdata Images
-        formDataCopy = {
-            ...formData,
-            imgUrls,//use new imgUrls TO update old value
-            geolocation,
-            timestamp: serverTimestamp(),
-            userRef: auth.currentUser.uid,
-          };
-    }else{
-        formDataCopy = { // will not update images
-            ...formData,
-            geolocation,
-            timestamp: serverTimestamp(),
-            userRef: auth.currentUser.uid,
-          };
+    if (imgUrls) {
+      // UPdata Images
+      formDataCopy = {
+        ...formData,
+        imgUrls, //use new imgUrls TO update old value
+        geolocation,
+        timestamp: serverTimestamp(),
+        userRef: auth.currentUser.uid,
+      };
+    } else {
+      formDataCopy = {
+        // will not update images
+        ...formData,
+        geolocation,
+        timestamp: serverTimestamp(),
+        userRef: auth.currentUser.uid,
+      };
     }
-    
+
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
     delete formDataCopy.latitude;
     delete formDataCopy.longitude;
     const docRef = doc(db, "listings", params.listingId);
 
-    await updateDoc(docRef, formDataCopy);   // Update the document
-    console.log("EditListing-postNewListingInfoToCloud:",formDataCopy);
+    await updateDoc(docRef, formDataCopy); // Update the document
+    console.log("EditListing-postNewListingInfoToCloud:", formDataCopy);
     setLoading(false);
     toast.success("Listing Edited");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
@@ -248,6 +254,7 @@ export default function EditListing() {
           <button
             type="button"
             id="type"
+            name="type"
             value="sale"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
@@ -260,6 +267,7 @@ export default function EditListing() {
           </button>
           <button
             type="button"
+            name="type"
             id="type"
             value="rent"
             onClick={onChange}
@@ -275,6 +283,7 @@ export default function EditListing() {
         <p className="text-lg mt-6 font-semibold">Name</p>
         <input
           type="text"
+          name="name"
           id="name"
           value={name}
           onChange={onChange}
@@ -290,6 +299,7 @@ export default function EditListing() {
             <input
               type="number"
               id="bedrooms"
+              name="bedrooms"
               value={bedrooms}
               onChange={onChange}
               min="1"
@@ -303,6 +313,7 @@ export default function EditListing() {
             <input
               type="number"
               id="bathrooms"
+              name="bathrooms"
               value={bathrooms}
               onChange={onChange}
               min="1"
@@ -316,22 +327,27 @@ export default function EditListing() {
         <div className="flex">
           <button
             type="button"
+            name="parking"
             id="parking"
-            value={true}
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !parking ? "bg-white text-black" : "bg-slate-600 text-white"
+              parking.toLowerCase() === "true"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             Yes
           </button>
           <button
             type="button"
-            id="parking"
-            value={false}
+            name="parking"
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              parking ? "bg-white text-black" : "bg-slate-600 text-white"
+              parking.toLowerCase() === "false"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             no
@@ -341,22 +357,26 @@ export default function EditListing() {
         <div className="flex">
           <button
             type="button"
-            id="furnished"
-            value={true}
+            name="furnished"
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+              furnished.toLowerCase() === "true"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             yes
           </button>
           <button
             type="button"
-            id="furnished"
-            value={false}
+            name="furnished"
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              furnished ? "bg-white text-black" : "bg-slate-600 text-white"
+              furnished.toLowerCase() === "false"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             no
@@ -365,7 +385,7 @@ export default function EditListing() {
         <p className="text-lg mt-6 font-semibold">Address</p>
         <textarea
           type="text"
-          id="address"
+          name="address"
           value={address}
           onChange={onChange}
           placeholder="Address"
@@ -377,8 +397,9 @@ export default function EditListing() {
             <div className="">
               <p className="text-lg font-semibold">Latitude</p>
               <input
-                type="number"
+                type="text"
                 id="latitude"
+                name="geolocation.lat"
                 value={geolocation.lat}
                 onChange={onChange}
                 required
@@ -390,8 +411,9 @@ export default function EditListing() {
             <div className="">
               <p className="text-lg font-semibold">Longitude</p>
               <input
-                type="number"
+                type="text"
                 id="longitude"
+                name="geolocation.lng"
                 value={geolocation.lng}
                 onChange={onChange}
                 required
@@ -405,7 +427,7 @@ export default function EditListing() {
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
-          id="description"
+          name="description"
           value={description}
           onChange={onChange}
           placeholder="Description"
@@ -416,22 +438,26 @@ export default function EditListing() {
         <div className="flex mb-6">
           <button
             type="button"
-            id="offer"
-            value={true}
+            name="offer"
+            value="true"
             onClick={onChange}
             className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              !offer ? "bg-white text-black" : "bg-slate-600 text-white"
+              offer.toLowerCase() === "true"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             yes
           </button>
           <button
             type="button"
-            id="offer"
-            value={false}
+            name="offer"
+            value="false"
             onClick={onChange}
             className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded hover:shadow-lg focus:shadow-lg active:shadow-lg transition duration-150 ease-in-out w-full ${
-              offer ? "bg-white text-black" : "bg-slate-600 text-white"
+              offer.toLowerCase() === "false"
+                ? "bg-slate-600 text-white"
+                : "bg-white text-black"
             }`}
           >
             no
@@ -443,7 +469,7 @@ export default function EditListing() {
             <div className="flex w-full justify-center items-center space-x-6">
               <input
                 type="number"
-                id="regularPrice"
+                name="regularPrice"
                 value={regularPrice}
                 onChange={onChange}
                 min="50"
@@ -466,7 +492,7 @@ export default function EditListing() {
               <div className="flex w-full justify-center items-center space-x-6">
                 <input
                   type="number"
-                  id="discountedPrice"
+                  name="discountedPrice"
                   value={discountedPrice}
                   onChange={onChange}
                   min="50"
@@ -492,7 +518,7 @@ export default function EditListing() {
           </p>
           <input
             type="file"
-            id="images"
+            name="images"
             onChange={onChange}
             accept=".jpg,.png,.jpeg"
             multiple

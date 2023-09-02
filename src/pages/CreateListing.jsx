@@ -332,7 +332,7 @@ function CreateListing() {
             <div className="">
               <p className="text-lg font-semibold">Latitude</p>
               <input
-                type="number"
+                type="text"
                 id="latitude"
                 name="latitude"
                 value={latitude}
@@ -346,7 +346,7 @@ function CreateListing() {
             <div className="">
               <p className="text-lg font-semibold">Longitude</p>
               <input
-                type="number"
+                type="text"
                 id="longitude"
                 name="longitude"
                 value={longitude}

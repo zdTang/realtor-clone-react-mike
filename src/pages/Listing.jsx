@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { db } from "../firebase";
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 import { getAuth } from "firebase/auth";
 import Contact from "../components/Contact";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
@@ -16,12 +16,7 @@ import {
   FaParking,
   FaChair,
 } from "react-icons/fa";
-import {
-  EffectFade,
-  Autoplay,
-  Navigation,
-  Pagination,
-} from "swiper/modules";
+import { EffectFade, Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 
 export default function Listing() {
@@ -31,8 +26,13 @@ export default function Listing() {
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [contactLandlord, setContactLandlord] = useState(false);
+  // if (listing) {
+  //   console.log("Listing-GetLocation:", [
+  //     parseFloat(listing.geolocation.lat),
+  //     parseFloat(listing.geolocation.lng),
+  //   ]);
+  // }
 
-  console.log("Listing-GetLocation:",[parseFloat(listing.geolocation.lat), parseFloat(listing.geolocation.lng)]);
   //SwiperCore.use([Autoplay, Navigation, Pagination]);
   useEffect(() => {
     async function fetchListing() {
@@ -40,7 +40,7 @@ export default function Listing() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log("Listing-getListingInfoFromCloud:",docSnap.data())
+        console.log("Listing-getListingInfoFromCloud:", docSnap.data());
         setListing(docSnap.data());
         setLoading(false);
       }
@@ -53,7 +53,7 @@ export default function Listing() {
   return (
     <main>
       <Swiper
-        modules={[EffectFade,Autoplay,Navigation,Pagination]}
+        modules={[EffectFade, Autoplay, Navigation, Pagination]}
         //spaceBetween={50}
         slidesPerView
         pagination={{ clickable: true }}
@@ -97,7 +97,7 @@ export default function Listing() {
         </p>
       )}
 
-<div className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg shadow-lg bg-white lg:space-x-5">
+      <div className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg shadow-lg bg-white lg:space-x-5">
         <div className=" w-full ">
           <p className="text-2xl font-bold mb-3 text-blue-900">
             {listing.name} - ${" "}
@@ -162,7 +162,10 @@ export default function Listing() {
         </div>
         <div className="w-full h-[200px] md:h-[400px] z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2">
           <MapContainer
-            center={[parseFloat(listing.geolocation.lat), parseFloat(listing.geolocation.lng)]}
+            center={[
+              parseFloat(listing.geolocation.lat),
+              parseFloat(listing.geolocation.lng),
+            ]}
             zoom={13}
             scrollWheelZoom={false}
             style={{ height: "100%", width: "100%" }}
@@ -172,7 +175,10 @@ export default function Listing() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <Marker
-              position={[parseFloat(listing.geolocation.lat), parseFloat(listing.geolocation.lng)]}
+              position={[
+                parseFloat(listing.geolocation.lat),
+                parseFloat(listing.geolocation.lng),
+              ]}
             >
               <Popup>
                 A pretty CSS3 popup. <br /> Easily customizable.
@@ -184,4 +190,3 @@ export default function Listing() {
     </main>
   );
 }
-
