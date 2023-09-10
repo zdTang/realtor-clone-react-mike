@@ -17,7 +17,7 @@ import {
   FaChair,
 } from "react-icons/fa";
 import { EffectFade, Autoplay, Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
+import "swiper/css/bundle";
 
 export default function Listing() {
   const params = useParams();
@@ -54,15 +54,10 @@ export default function Listing() {
     <main>
       <Swiper
         modules={[EffectFade, Autoplay, Navigation, Pagination]}
-        //spaceBetween={50}
-        slidesPerView
-        pagination={{ clickable: true }}
-        //scrollbar={{ draggable: true }}
-        navigation={{
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-          //disabledClass: "swiper-button-disabled"
-        }}
+        slidesPerView={1}
+        navigation
+        pagination={{ type: "progressbar" }}
+        effect="fade"
         autoplay={{ delay: 3000 }}
         //onSwiper={(swiper) => console.log(swiper)}
         //onSlideChange={() => console.log('slide change')}
@@ -180,9 +175,7 @@ export default function Listing() {
                 parseFloat(listing.geolocation.lng),
               ]}
             >
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
+              <Popup>{listing.address}</Popup>
             </Marker>
           </MapContainer>
         </div>
