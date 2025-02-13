@@ -1,12 +1,17 @@
-name: Trigger Release on Sprint Branch
+name: Deploy Sprint Branch to GitHub Pages
 
 on:
   push:
     branches:
-      - "sprint*" # Matches any branch that starts with "sprint"
+      - "sprint*" # Triggers only for branches starting with "sprint"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  release:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,16 +27,12 @@ jobs:
         run: npm install
 
       - name: Build Project
-        run: npm run build
+        run: npm run build # Ensure your project outputs to 'dist' or 'build'
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body: |
-            Automatic release for branch ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: build # Change this if your build output directory is different
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
