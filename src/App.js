@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Offers from "./pages/Offers";
@@ -19,7 +19,7 @@ function App() {
   console.log("into App--");
   return (
     <>
-      <Router basename="/realtor-clone-react-mike">
+      <BrowserRouter basename="/realtor-clone-react-mike">
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -42,7 +42,7 @@ function App() {
             <Route path="/edit-listing/:listingId" element={<EditListing />} />
           </Route>
         </Routes>
-      </Router>
+      </BrowserRouter>
 
       <ToastContainer
         position="bottom-center"
