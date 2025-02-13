@@ -1,9 +1,9 @@
-name: Deploy Sprint Branch to GitHub Pages
+name: Release on Main Branch Update
 
 on:
   push:
     branches:
-      - "sprint*" # Triggers only for branches starting with "sprint"
+      - master # Triggers on any push to the 'main' branch
 
 permissions:
   contents: write
