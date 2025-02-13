@@ -1,0 +1,38 @@
+name: Release on Main Branch Update
+
+on:
+  push:
+    branches:
+      - master # Triggers on any push to the 'main' branch
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build # Ensure your project outputs to 'dist' or 'build'
+
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: build # Change this if your build output directory is different
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
