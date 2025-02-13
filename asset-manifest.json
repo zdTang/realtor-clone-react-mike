@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/realtor-clone-react-mike/static/css/main.75fcc42e.css",
-    "main.js": "/realtor-clone-react-mike/static/js/main.cd673587.js",
+    "main.css": "/realtor-clone-react-mike/static/css/main.79ccde0f.css",
+    "main.js": "/realtor-clone-react-mike/static/js/main.ff1395e7.js",
     "static/media/spinner.svg": "/realtor-clone-react-mike/static/media/spinner.fbe702142e0a0c01db2b31613b61ba2a.svg",
     "index.html": "/realtor-clone-react-mike/index.html",
-    "main.75fcc42e.css.map": "/realtor-clone-react-mike/static/css/main.75fcc42e.css.map",
-    "main.cd673587.js.map": "/realtor-clone-react-mike/static/js/main.cd673587.js.map"
+    "main.79ccde0f.css.map": "/realtor-clone-react-mike/static/css/main.79ccde0f.css.map",
+    "main.ff1395e7.js.map": "/realtor-clone-react-mike/static/js/main.ff1395e7.js.map"
   },
   "entrypoints": [
-    "static/css/main.75fcc42e.css",
-    "static/js/main.cd673587.js"
+    "static/css/main.79ccde0f.css",
+    "static/js/main.ff1395e7.js"
   ]
 }
