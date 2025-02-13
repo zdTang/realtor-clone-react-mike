@@ -19,7 +19,7 @@ function App() {
   console.log("into App--");
   return (
     <>
-      <Router>
+      <Router basename="/realtor-clone-react-mike">
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
